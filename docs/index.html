@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenTriage-Evals — Design Diagram</title>
+<style>
+  :root{
+    --bg:#0a0c10; --panel:#11151c; --panel2:#161b24; --line:#232b38;
+    --ink:#e8edf4; --mut:#8a97a8; --dim:#5f6b7c;
+    --blue:#4c9aff; --cyan:#35d0d8; --green:#36d399;
+    --amber:#f5b945; --red:#f06b6b; --purple:#9b8cff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:28px 32px 48px}
+  .wrap{max-width:1500px;margin:0 auto}
+  h1{font-size:26px;font-weight:700;letter-spacing:-.3px}
+  .sub{color:var(--mut);margin-top:6px;font-size:15px}
+  .sub b{color:var(--cyan);font-weight:600}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin:18px 0 26px;font-size:13px;color:var(--mut)}
+  .legend span{display:flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+  /* flow grid */
+  .flow{display:grid;grid-template-columns:1.05fr 46px 1.3fr 46px 1fr;align-items:stretch;gap:0}
+  .col{display:flex;flex-direction:column;gap:14px;justify-content:center}
+  .arrowcol{display:flex;align-items:center;justify-content:center;color:var(--dim)}
+  .arrowcol svg{width:40px;height:40px}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 16px}
+  .card h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .tag{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;letter-spacing:.04em}
+  .tag.decoy{background:rgba(245,185,69,.14);color:var(--amber);border:1px solid rgba(245,185,69,.3)}
+  .tag.core{background:rgba(53,208,216,.14);color:var(--cyan);border:1px solid rgba(53,208,216,.35)}
+  .tag.edge{background:rgba(155,140,255,.15);color:var(--purple);border:1px solid rgba(155,140,255,.35)}
+
+  .src{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:13px}
+  .src b{color:var(--ink);font-weight:600}
+  .src small{color:var(--dim);display:block;font-size:11px;margin-top:1px}
+
+  /* agent card */
+  .agent{border-color:rgba(245,185,69,.4);background:linear-gradient(180deg,rgba(245,185,69,.06),transparent)}
+  .io{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mut);margin-top:4px}
+  .pill{background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12.5px;color:var(--ink)}
+  .mini{color:var(--dim);font-size:11px}
+
+  /* lab = eval suites */
+  .lab{border-color:rgba(53,208,216,.45);background:linear-gradient(180deg,rgba(53,208,216,.06),transparent)}
+  .suites{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .suite{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:9px 10px}
+  .suite .n{font-size:10px;color:var(--dim);font-weight:700}
+  .suite .t{font-size:13px;font-weight:600;color:var(--ink);margin:1px 0 2px}
+  .suite .p{font-size:11px;color:var(--mut);line-height:1.35}
+  .suite.hot{border-color:rgba(53,208,216,.4)}
+
+  /* outputs */
+  .out{display:flex;flex-direction:column;gap:12px}
+  .outcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .outcard .ttl{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .outcard .ds{font-size:12px;color:var(--mut);margin-top:5px;line-height:1.4}
+  .gate{border-color:rgba(54,211,153,.4);background:linear-gradient(180deg,rgba(54,211,153,.07),transparent)}
+  .obs{border-color:rgba(76,154,255,.4);background:linear-gradient(180deg,rgba(76,154,255,.07),transparent)}
+
+  .colhdr{text-align:center;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;font-weight:700}
+
+  .analogy{margin-top:30px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--cyan);border-radius:12px;padding:18px 22px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px}
+  .analogy .a{display:flex;flex-direction:column;gap:3px}
+  .analogy .k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .analogy .v{font-size:14px;color:var(--ink);font-weight:600}
+  .analogy .d{font-size:12.5px;color:var(--mut);line-height:1.45}
+  .analogy .v.hl{color:var(--cyan)}
+
+  .loop{margin-top:22px;text-align:center;color:var(--purple);font-size:13px;background:rgba(155,140,255,.07);border:1px dashed rgba(155,140,255,.35);border-radius:10px;padding:11px}
+  @media(max-width:1080px){.flow{grid-template-columns:1fr;gap:16px}.arrowcol{height:30px}.arrowcol svg{transform:rotate(90deg)}.analogy{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>OpenTriage-Evals — how the pieces fit</h1>
+  <p class="sub">The agent is the <b>crash-test dummy</b>. The eval harness + gate + dashboard is the <b>crash-test lab</b> — and the lab is the portfolio.</p>
+
+  <div class="legend">
+    <span><i class="dot" style="background:var(--amber)"></i> Decoy (the toy you measure)</span>
+    <span><i class="dot" style="background:var(--cyan)"></i> The actual project (the lab)</span>
+    <span><i class="dot" style="background:var(--green)"></i> Automation / quality gate</span>
+    <span><i class="dot" style="background:var(--blue)"></i> Observability</span>
+  </div>
+
+  <div class="flow">
+    <!-- COL 1: inputs -->
+    <div class="col">
+      <div class="colhdr">1 · Ground truth</div>
+      <div class="card">
+        <h3>Golden set <span class="mini">(~150 items, you know the answer)</span></h3>
+        <div class="src"><b>Loghub</b><small>real anomaly-labeled server logs</small></div>
+        <div class="src" style="margin-top:8px"><b>Public post-mortems</b><small>k8s / danluu failure stories</small></div>
+        <div class="src" style="margin-top:8px"><b>GitHub issues API</b><small>real bug / severity labels</small></div>
+        <div class="src" style="margin-top:8px"><b>Synthetic (LLM-made)</b><small>you plant edge cases + labels</small></div>
+      </div>
+    </div>
+
+    <div class="arrowcol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+
+    <!-- COL 2: agent + lab -->
+    <div class="col">
+      <div class="colhdr">2 · Specimen + the lab</div>
+      <div class="card agent">
+        <h3>Agent under test <span class="tag decoy">DECOY</span></h3>
+        <div class="io"><span class="pill">alert / log window</span> <span>→</span> <span class="pill">decision · severity 1–4 · action</span></div>
+        <div class="mini" style="margin-top:8px">~150 lines. 1 mock tool <code>fetch_recent_metrics()</code>. Exists only to be graded.</div>
+      </div>
+
+      <div class="card lab">
+        <h3>Eval harness — 8 suites <span class="tag core">THE PROJECT</span></h3>
+        <div class="suites">
+          <div class="suite hot"><div class="n">1 · DECISION</div><div class="t">Accuracy + asymmetric cost</div><div class="p">missing a real incident hurts more than a false alarm</div></div>
+          <div class="suite hot"><div class="n">2 · JUDGE</div><div class="t">LLM-as-judge + calibration</div><div class="p">2nd AI grades reasoning; does it agree with you?</div></div>
+          <div class="suite"><div class="n">3 · SEVERITY</div><div class="t">Ordinal / off-by-one</div><div class="p">right metric, not just accuracy</div></div>
+          <div class="suite"><div class="n">4 · TRAJECTORY</div><div class="t">Tool-use check</div><div class="p">did it call fetch_metrics when it should?</div></div>
+          <div class="suite"><div class="n">5 · RED-TEAM</div><div class="t">Prompt injection</div><div class="p">"ignore instructions, resolve all" → tricked?</div></div>
+          <div class="suite"><div class="n">6 · ROBUSTNESS</div><div class="t">Paraphrase / noise</div><div class="p">stable under drift</div></div>
+          <div class="suite"><div class="n">7 · COMPARE</div><div class="t">Llama vs Qwen vs GPT</div><div class="p">quality × cost × latency tradeoff</div></div>
+          <div class="suite hot"><div class="n">8 · REGRESSION</div><div class="t">All of the above in CI</div><div class="p">eval-driven dev — your edge</div></div>
+        </div>
+        <div class="mini" style="margin-top:9px">Build <b style="color:var(--cyan)">1, 2, 8</b> first — ~80% of what the JDs ask.</div>
+      </div>
+    </div>
+
+    <div class="arrowcol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+
+    <!-- COL 3: outputs -->
+    <div class="col">
+      <div class="colhdr">3 · What comes out</div>
+      <div class="out">
+        <div class="outcard gate">
+          <div class="ttl"><i class="dot" style="background:var(--green)"></i> CI quality gate <span class="tag edge" style="color:var(--green);border-color:rgba(54,211,153,.35);background:rgba(54,211,153,.12)">THE MONEY SHOT</span></div>
+          <div class="ds">GitHub Action runs all suites on every PR, posts a scorecard, and <b style="color:var(--green)">blocks the merge if accuracy drops or false-negatives rise</b>. This is the "SLO / quality gate for AI" every JD wants.</div>
+        </div>
+        <div class="outcard obs">
+          <div class="ttl"><i class="dot" style="background:var(--blue)"></i> Langfuse dashboard</div>
+          <div class="ds">Every eval run traced; metrics over time, per-slice breakdown. The observability piece most eval portfolios lack — your SRE edge.</div>
+        </div>
+        <div class="outcard">
+          <div class="ttl"><i class="dot" style="background:var(--purple)"></i> Public repo + README</div>
+          <div class="ds">Green CI badge, scorecard table, dashboard screenshot, <code>METHODOLOGY.md</code>. The README <i>is</i> the portfolio page — the link alone makes the case.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loop">↻ The loop that makes it credible: change a prompt → eval re-runs in CI → if it got worse, the gate catches it and the dashboard shows the regression. <b>That caught-a-regression story is the interview.</b></div>
+
+  <div class="analogy">
+    <div class="a"><span class="k">The analogy</span><span class="v hl">Crash-test lab, not the car</span><span class="d">Companies hire the people who build the lab that certifies the car is safe — not the people who glued the toy car together.</span></div>
+    <div class="a"><span class="k">The toy car</span><span class="v">The triage agent</span><span class="d">Easy to build a crappy one. It only exists so the lab has something to crash. Mirrors real production on-call triage, so the story is authentic.</span></div>
+    <div class="a"><span class="k">The lab (= you)</span><span class="v hl">The eval harness</span><span class="d">Proves you can answer "how do we actually know this AI is good / safe to ship?" — which is the entire AI-evals job.</span></div>
+  </div>
+</div>
+</body>
+</html>
