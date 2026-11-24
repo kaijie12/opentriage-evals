@@ -1,0 +1,478 @@
+{
+  "t01": {
+    "act_now": true,
+    "severity": 4,
+    "reasoning": "Primary DB down with near-total checkout failure.",
+    "suggested_action": "Declare incident; follow db-failover runbook; page DB on-call.",
+    "need_metrics": false
+  },
+  "t02": {
+    "act_now": true,
+    "severity": 4,
+    "reasoning": "Auth broken globally; user-facing outage.",
+    "suggested_action": "Open SEV1; check identity dependency health and recent config pushes.",
+    "need_metrics": false
+  },
+  "t03": {
+    "act_now": true,
+    "severity": 3,
+    "reasoning": "Regional brownout with elevated errors and latency.",
+    "suggested_action": "Page regional on-call; check eu-west-1 capacity and recent canary.",
+    "need_metrics": false
+  },
+  "t04": {
+    "act_now": true,
+    "severity": 3,
+    "reasoning": "Backlog already past critical and still rising past SLO.",
+    "suggested_action": "Scale consumers; pause non-critical producers; monitor lag.",
+    "need_metrics": false
+  },
+  "t05": {
+    "act_now": true,
+    "severity": 3,
+    "reasoning": "Stateful disk will fill within hours and stop ingest.",
+    "suggested_action": "Expand volume or purge safe logs; verify retention job.",
+    "need_metrics": false
+  },
+  "t06": {
+    "act_now": false,
+    "severity": 1,
+    "reasoning": "Successful backup notification with no errors.",
+    "suggested_action": "No action; archive notice.",
+    "need_metrics": false
+  },
+  "t07": {
+    "act_now": false,
+    "severity": 1,
+    "reasoning": "Informational cert renewal success.",
+    "suggested_action": "No action.",
+    "need_metrics": false
+  },
+  "t08": {
+    "act_now": false,
+    "severity": 2,
+    "reasoning": "Isolated replica OOM with spare capacity.",
+    "suggested_action": "File ticket to bump memory limit next business day.",
+    "need_metrics": false
+  },
+  "t09": {
+    "act_now": false,
+    "severity": 2,
+    "reasoning": "Canary flake with healthy production and auto-rollback.",
+    "suggested_action": "Review canary logs tomorrow; no page.",
+    "need_metrics": false
+  },
+  "t10": {
+    "act_now": false,
+    "severity": 1,
+    "reasoning": "Pre-announced staging load test noise.",
+    "suggested_action": "Suppress; confirm window end.",
+    "need_metrics": false
+  },
+  "t11": {
+    "act_now": true,
+    "severity": 4,
+    "reasoning": "Likely ransomware with backup targeting.",
+    "suggested_action": "Isolate hosts; engage IR; preserve forensics.",
+    "need_metrics": false
+  },
+  "t12": {
+    "act_now": true,
+    "severity": 3,
+    "reasoning": "User-visible media failures from origin fetch errors.",
+    "suggested_action": "Check origin health and recent media deploy.",
+    "need_metrics": false
+  },
+  "t13": {
+    "act_now": false,
+    "severity": 2,
+    "reasoning": "Latency up but within SLO with headroom.",
+    "suggested_action": "Trend watch; no immediate action.",
+    "need_metrics": false
+  },
+  "t14": {
+    "act_now": true,
+    "severity": 3,
+    "reasoning": "Merchant-facing confirmation failures.",
+    "suggested_action": "Check webhook worker and downstream bank API status.",
+    "need_metrics": false
+  },
+  "t15": {
+    "act_now": false,
+    "severity": 2,
+    "reasoning": "Single-host CPU without corroborating errors; likely noisy.",
+    "suggested_action": "Check metrics; if isolated, ticket for capacity review.",
+    "need_metrics": true
+  },
+  "t15::metrics": {
+    "act_now": false,
+    "severity": 2,
+    "reasoning": "Single-host CPU without corroborating errors; likely noisy. Metrics show no corroborating error spike.",
+    "suggested_action": "Check metrics; if isolated, ticket for capacity review.",
+    "need_metrics": false
+  },
+  "t16": {
+    "act_now": true,
+    "severity": 3,
+    "reasoning": "Critical replica lag breaking dependent jobs.",
+    "suggested_action": "Investigate replica IO; pause heavy analytics; consider re-clone.",
+    "need_metrics": false
+  },
+  "t17": {
+    "act_now": false,
+    "severity": 1,
+    "reasoning": "Deprecated job with no subscribers.",
+    "suggested_action": "Disable monitor; no page.",
+    "need_metrics": false
+  },
+  "t18": {
+    "act_now": true,
+    "severity": 4,
+    "reasoning": "AZ network partition with customer impact.",
+    "suggested_action": "Declare SEV1; shift traffic off az-b; engage network on-call.",
+    "need_metrics": false
+  },
+  "t19": {
+    "act_now": false,
+    "severity": 2,
+    "reasoning": "Spare disk with existing ticket; no active impact.",
+    "suggested_action": "Continue STOR-4412; no new page.",
+    "need_metrics": false
+  },
+  "t20": {
+    "act_now": true,
+    "severity": 3,
+    "reasoning": "Cache collapse driving API errors.",
+    "suggested_action": "Scale redis; flush hot keys carefully; watch error rate.",
+    "need_metrics": false
+  },
+  "t21": {
+    "act_now": true,
+    "severity": 3,
+    "reasoning": "Public cert expires within a day and renew failed.",
+    "suggested_action": "Manually renew/install cert before expiry.",
+    "need_metrics": false
+  },
+  "t22": {
+    "act_now": false,
+    "severity": 2,
+    "reasoning": "Staging-only brief blip.",
+    "suggested_action": "Ignore unless recurring.",
+    "need_metrics": false
+  },
+  "t23": {
+    "act_now": true,
+    "severity": 4,
+    "reasoning": "Unauthorized mass delete risking data loss.",
+    "suggested_action": "Stop job; lock account; assess restore need.",
+    "need_metrics": false
+  },
+  "t24": {
+    "act_now": false,
+    "severity": 1,
+    "reasoning": "Successful docs deploy.",
+    "suggested_action": "No action.",
+    "need_metrics": false
+  },
+  "t25": {
+    "act_now": false,
+    "severity": 2,
+    "reasoning": "Detector-only anomaly without user symptom; treat as watch.",
+    "suggested_action": "Pull metrics; escalate only if errors/latency confirm.",
+    "need_metrics": true
+  },
+  "t25::metrics": {
+    "act_now": false,
+    "severity": 2,
+    "reasoning": "Detector-only anomaly without user symptom; treat as watch. Metrics show no corroborating error spike.",
+    "suggested_action": "Pull metrics; escalate only if errors/latency confirm.",
+    "need_metrics": false
+  },
+  "x01": {
+    "act_now": true,
+    "severity": 4,
+    "reasoning": "Global gateway outage after config push.",
+    "suggested_action": "Rollback config #4421; declare incident.",
+    "need_metrics": false
+  },
+  "x02": {
+    "act_now": true,
+    "severity": 3,
+    "reasoning": "SLO burn tied to new ranking flag.",
+    "suggested_action": "Disable ranking flag; verify error rate drop.",
+    "need_metrics": false
+  },
+  "x03": {
+    "act_now": false,
+    "severity": 1,
+    "reasoning": "Informational digest.",
+    "suggested_action": "No action.",
+    "need_metrics": false
+  },
+  "x04": {
+    "act_now": false,
+    "severity": 2,
+    "reasoning": "Single flake below page threshold.",
+    "suggested_action": "No page; monitor.",
+    "need_metrics": false
+  },
+  "x05": {
+    "act_now": true,
+    "severity": 3,
+    "reasoning": "Stuck consumers delaying invoices.",
+    "suggested_action": "Restart consumers; check poison messages; page billing.",
+    "need_metrics": false
+  },
+  "x06": {
+    "act_now": true,
+    "severity": 4,
+    "reasoning": "Object store outage with user-visible breakage.",
+    "suggested_action": "Declare incident; follow vendor status; enable degrade mode.",
+    "need_metrics": false
+  },
+  "x07": {
+    "act_now": false,
+    "severity": 2,
+    "reasoning": "Dev-only sandbox noise.",
+    "suggested_action": "Ignore or notify sandbox owner.",
+    "need_metrics": false
+  },
+  "x08": {
+    "act_now": true,
+    "severity": 3,
+    "reasoning": "429 storm causing customer offline state.",
+    "suggested_action": "Raise limits carefully or shed load; communicate status.",
+    "need_metrics": false
+  },
+  "x09": {
+    "act_now": false,
+    "severity": 2,
+    "reasoning": "Expected ETL CPU with no error signal.",
+    "suggested_action": "Confirm metrics flat for errors; ack without incident.",
+    "need_metrics": true
+  },
+  "x09::metrics": {
+    "act_now": false,
+    "severity": 2,
+    "reasoning": "Expected ETL CPU with no error signal. Metrics show no corroborating error spike.",
+    "suggested_action": "Confirm metrics flat for errors; ack without incident.",
+    "need_metrics": false
+  },
+  "x10": {
+    "act_now": true,
+    "severity": 4,
+    "reasoning": "DNS failure cascading across critical paths.",
+    "suggested_action": "Page platform; restore CoreDNS; consider static fallbacks.",
+    "need_metrics": false
+  },
+  "judge::t01": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t02": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t03": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t04": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t05": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t06": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t07": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t08": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t09": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t10": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t11": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t12": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t13": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t14": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t15": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t16": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t17": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t18": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t19": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t20": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t21": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t22": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t23": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t24": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::t25": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::x01": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::x02": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::x03": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::x04": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::x05": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::x06": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::x07": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::x08": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::x09": {
+    "reasoning_score": 3,
+    "implied_act_now": false,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  },
+  "judge::x10": {
+    "reasoning_score": 3,
+    "implied_act_now": true,
+    "agree_with_human_act_now": true,
+    "comment": "Fixture judge mirrors human label agreement."
+  }
+}

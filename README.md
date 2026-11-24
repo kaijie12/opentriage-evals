@@ -1,46 +1,66 @@
 # OpenTriage-Evals
 
 > An open-source **evaluation harness** for an LLM **on-call / alert-triage agent** — golden set,
-> LLM-as-judge with human calibration, trajectory + red-team + robustness suites, model cost/quality
-> comparison, and a **CI regression gate** with Langfuse observability.
+> asymmetric FN/FP metrics, LLM-as-judge with human calibration, and a **CI regression gate**.
 
-**The agent is the crash-test dummy. The eval harness + gate + dashboard is the crash-test lab — and the lab is the point.**
-This project demonstrates how you actually *know* an AI agent is good and safe to ship, not just that one was built.
+**The agent is the crash-test dummy. The eval harness + gate is the crash-test lab — and the lab is the point.**
 
-### 📊 [View the design diagram →](https://kaijie12.github.io/opentriage-evals/)
-
-*(live on GitHub Pages — the one-screen visual of how every piece fits together)*
+### Design diagram → [kaijie12.github.io/opentriage-evals](https://kaijie12.github.io/opentriage-evals/)
 
 ---
 
-## What's here
+## Quickstart
 
-| File | What it is |
-|---|---|
-| [`PLAN.md`](PLAN.md) | The full build plan — infra, data sources, 6 phases, the 8 eval suites |
-| [`docs/index.html`](docs/index.html) | The design diagram (rendered live via the Pages link above) |
+```bash
+make install     # creates .venv + editable install
+make split-check
+make test
+make eval        # scorecard (fixture mode by default)
+make eval-ci     # test-split + regression gate
+```
 
-## The core idea in one table
+Scorecard lands in `artifacts/scorecard.json`.
 
-A tiny agent turns an alert/log window into `{act_now, severity 1–4, reasoning, action}`. It exists only
-to be measured. The real work is the **8 eval suites** that grade it against a 120–150 item golden set:
+### Live model (optional)
 
-| # | Suite | Proves |
-|---|---|---|
-| 1 | Decision accuracy + **asymmetric FN/FP** | cost-aware correctness |
-| 2 | **LLM-as-judge** + calibration vs human labels | can you trust the judge |
-| 3 | Severity classification (ordinal) | right metric, not just accuracy |
-| 4 | **Trajectory / tool-use** | agent-level evaluation |
-| 5 | **Safety / red-team** (prompt injection) | unsafe-action testing |
-| 6 | Robustness (paraphrase / noise) | stability under drift |
-| 7 | **Model comparison** (quality × cost × latency) | tradeoff thinking |
-| 8 | **Regression gate** in CI | eval-driven development — the headline |
+```bash
+# requires Ollama: https://ollama.com
+ollama pull llama3.2
+OPENTRIAGE_MODE=live OPENTRIAGE_MODEL=llama3.2 make eval
+```
 
-## Built to be reproducible on a laptop
+CI always uses **fixture mode** so the gate needs no API key.
 
-No proprietary data, no cloud account. **Ollama** (open-weight LLMs) + **DeepEval/Promptfoo** +
-**Langfuse** (Docker) + **GitHub Actions**. Everything runs locally.
+---
+
+## What is measured
+
+| Suite | Metric | Why |
+| --- | --- | --- |
+| 1 | `act_now` accuracy, FN/FP, **asymmetric score** (FN×3) | Cost-aware correctness |
+| 1 | Ordinal severity score | Off-by-one tolerant |
+| 2 | Judge reasoning score + judge↔human agreement | Can you trust the judge |
+| 8 | CI gate vs `evals/baselines.json` | Eval-driven development |
+
+Details: [`METHODOLOGY.md`](METHODOLOGY.md). Full roadmap: [`PLAN.md`](PLAN.md).
+
+---
+
+## Layout
+
+```
+src/opentriage/     # specimen agent + mock fetch_recent_metrics
+data/golden/        # rubric + labeled JSONL (train/test)
+data/fixtures/      # recorded outputs for CI / laptop-without-GPU
+evals/              # suites, runner, baselines, gate
+tests/              # unit tests (no live LLM)
+.github/workflows/  # PR eval gate
+```
+
+---
 
 ## Status
 
-🚧 Planning → scaffolding. See [`PLAN.md`](PLAN.md) for the roadmap.
+Runnable laptop harness: agent · 35-case golden set · suites 1/2/8 · `make eval` scorecard · GitHub Actions gate.
+
+Still growing toward the full [`PLAN.md`](PLAN.md) set (120–150 cases, Langfuse, suites 3–7).
